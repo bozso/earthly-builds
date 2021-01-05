@@ -1,0 +1,30 @@
+FROM alpine:3.11
+
+deps:
+    FROM ../../envs+yder
+    RUN apk add --no-cache libmicrohttpd-dev curl-dev
+    
+
+dev:
+    FROM +deps
+    RUN git clone https://github.com/babelouest/ulfius.git && \
+        cd ulfius && \
+        mkdir build && \
+        cd build && \
+        cmake -DBUILD_STATIC=on \
+              -DWITH_GNUTLS=off \
+              -DWITH_JOURNALD=off \
+              -DWITH_WEBSOCKET=off \
+              -DWITH_JANSSON=off \
+              -DINSTALL_HEADER=on \
+              .. && \
+        make && \
+        make install
+    SAVE ARTIFACT /ulfius/build/libulfius.a
+    SAVE ARTIFACT /ulfius/include
+
+docker:
+    FROM alpine:3.11
+    COPY +dev/libulfius.a /usr/lib/
+    COPY +dev/include /usr/local/include/ulfius
+    SAVE IMAGE ulfius:2.7.1

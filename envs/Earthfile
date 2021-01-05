@@ -1,0 +1,26 @@
+
+c:
+    FROM alpine:3.11
+    RUN apk add --no-cache gcc make git musl-dev cmake
+
+orcania:
+    FROM +c
+    RUN git clone https://github.com/babelouest/orcania.git && \
+        cd orcania && \
+        mkdir build && \
+        cd build && \
+        cmake -DBUILD_STATIC=on -DWITH_STRSTR=on .. && \
+        make && \
+        make install
+
+
+yder:
+    FROM +orcania
+    RUN git clone https://github.com/babelouest/yder.git && \
+        cd yder && \
+        mkdir build && \
+        cd build && \
+        cmake -DWITH_JOURNALD=off -DBUILD_STATIC=on .. && \
+        make && \
+        make install
+
