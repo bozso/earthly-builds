@@ -1,0 +1,21 @@
+FROM alpine:3.11
+
+fftw:
+    FROM ../../envs+dev
+    RUN apk add --no-cache wget
+    RUN wget -c http://www.fftw.org/fftw-3.3.9.tar.gz && \
+        tar -xvf fftw-3.3.9.tar.gz  && cd fftw-3.3.9  && \
+        ./configure --prefix=$(pwd) --enable-float && \
+        make && make install
+
+build:
+    FROM +fftw
+    RUN apk add --no-cache tcsh g++
+    RUN git clone https://github.com/TUDelftGeodesy/Doris
+    RUN cd /Doris && git checkout tags/v5.0.3Beta
+    # RUN cd /Doris/doris_core && tcsh configure && make && make install
+    # SAVE ARTIFACT /Doris/doris_core/Makefile AS LOCAL Makefile
+    # RUN cd /Doris/sar_tools && make && make install
+    RUN cd /Doris/envisat_tools && make && \
+        make INSTALL_DIR=/usr/local/bin install
+

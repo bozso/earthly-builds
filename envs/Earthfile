@@ -1,10 +1,10 @@
+FROM alpine:3.11
 
-c:
-    FROM alpine:3.11
-    RUN apk add --no-cache gcc make git musl-dev cmake
+dev:
+    RUN apk add --no-cache git gcc musl-dev make cmake
 
 orcania:
-    FROM +c
+    FROM +dev
     RUN git clone https://github.com/babelouest/orcania.git && \
         cd orcania && \
         mkdir build && \
