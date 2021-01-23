@@ -1,0 +1,17 @@
+FROM alpine:3.11
+
+build:
+    RUN apk add --no-cache g++ cmake git python make
+    RUN git clone https://github.com/ziglang/zig-bootstrap
+    WORKDIR zig-bootstrap
+    RUN sh build -j4 native-linux-musl native
+
+down:
+    RUN apk add --no-cache wget
+    RUN wget https://ziglang.org/download/0.7.1/zig-linux-x86_64-0.7.1.tar.xz
+    RUN tar -xvf zig-linux-x86_64-0.7.1.tar.xz
+    WORKDIR zig-linux-x86_64-0.7.1
+    RUN ls
+
+
+
