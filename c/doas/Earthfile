@@ -1,0 +1,16 @@
+FROM debian:buster-slim
+
+deps:
+    RUN apt-get update && apt-get install -y gcc make musl musl-dev git
+    RUN apt-get install -y musl-tools
+    RUN apt-get install -y build-essential make bison flex libpam0g-dev
+
+build:
+    FROM +deps
+    RUN mkdir -p /src/doas
+    RUN git clone https://github.com/slicer69/doas /src/doas
+    WORKDIR /src/doas
+    ENV CC musl-gcc
+    ENV LDFLAGS "${LDFLAGS} -static"
+    RUN make
+    SAVE ARTIFACT doas AS LOCAL doas
