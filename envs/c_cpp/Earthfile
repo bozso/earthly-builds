@@ -1,0 +1,18 @@
+FROM alpine:3.11
+
+dev:
+    RUN apk add --no-cache git gcc musl-dev make cmake
+
+libsolv:
+    FROM +dev
+    RUN apk add --no-cache g++ zlib-dev expat-dev 
+    RUN mkdir -p /src/libsolv
+    RUN git clone https://github.com/openSUSE/libsolv /src/libsolv
+    WORKDIR /src/libsolv
+    RUN mkdir build
+    WORKDIR /src/libsolv/build
+    RUN cmake \
+            -DENABLE_STATIC=ON \
+            -DDISABLE_SHARED=ON \
+            ..
+    RUN make
