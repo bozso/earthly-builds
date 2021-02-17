@@ -1,0 +1,12 @@
+FROM alpine:3.11
+
+build:
+    FROM ../../flecs+dev
+    RUN mkdir -p /src/flecs/test
+    COPY main.c /src/flecs/test
+    WORKDIR /src/flecs/test
+    ENV CFLAGS "${CFLAGS} -march=x86-64 -mtune=generic"
+    ENV LDFLAGS "${LDFLAGS} -static"
+    RUN gcc ${CFLAGS} main.c -c -o main.o 
+    RUN gcc ${LDFLAGS} main.o -lflecs_static -o main 
+    SAVE ARTIFACT main AS LOCAL main

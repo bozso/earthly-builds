@@ -10,4 +10,4 @@ dev:
     RUN cmake ..
     RUN make
     ENV CFLAGS "${CFLAGS} -I/src/flecs/include"
-    ENV LDLAGS "${LDFLAGS} -L/src/flecs/build"
+    ENV LDFLAGS "${LDFLAGS} -L/src/flecs/build"
