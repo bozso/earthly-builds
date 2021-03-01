@@ -3,6 +3,11 @@ FROM alpine:3.11
 dev:
     RUN apk add --no-cache git gcc musl-dev make cmake
 
+lint:
+    FROM +dev
+    RUN apk add --no-cache clang-analyzer
+
+
 libsolv:
     FROM +dev
     RUN apk add --no-cache g++ zlib-dev expat-dev 
