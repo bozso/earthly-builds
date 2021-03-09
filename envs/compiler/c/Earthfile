@@ -1,12 +1,11 @@
 FROM alpine:3.11
 
-ARG version=0.7.1
-
 env:
     RUN apk add --no-cache wget
 
 zig:
     FROM +env
+    ARG version=0.7.1
     RUN wget \
         https://ziglang.org/download/$version/zig-linux-x86_64-$version.tar.xz
     RUN tar -xvf zig-linux-x86_64-$version.tar.xz
