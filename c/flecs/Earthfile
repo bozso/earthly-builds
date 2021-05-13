@@ -1,13 +1,16 @@
 FROM alpine:3.11
 
+build-deps:
+    FROM ../../envs/compiler/c+zig
+    RUN apk add --no-cache git meson make binutils
+
 dev:
-    FROM ../../envs+dev
+    FROM +build-deps
     RUN mkdir -p /src/flecs
     RUN git clone https://github.com/SanderMertens/flecs /src/flecs
-    RUN mkdir -p /src/flecs/build
-    WORKDIR /src/flecs/build
-    #ENV CC musl-gcc
-    RUN cmake ..
-    RUN make
-    ENV CFLAGS "${CFLAGS} -I/src/flecs/include"
-    ENV LDFLAGS "${LDFLAGS} -L/src/flecs/build"
+    WORKDIR /src/flecs
+    RUN CC="zig cc" CC_LD="zig cc" AR="zig cc" meson builddir
+    RUN cd builddir && ninja
+    RUN ls builddir
+    # ENV CFLAGS "${CFLAGS} -I/src/flecs/include"
+    # ENV LDFLAGS "${LDFLAGS} -L/src/flecs/build"
