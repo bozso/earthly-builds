@@ -1,0 +1,8 @@
+FROM alpine:3.11
+
+dev:
+    RUN apk add --no-cache curl
+    RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+        | sh -s -- -y
+    ENV PATH="$HOME/.cargo/bin:$PATH"
+    RUN cargo

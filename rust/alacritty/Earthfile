@@ -1,0 +1,20 @@
+FROM alpine:3.11
+
+deps:
+    FROM ../../envs/rust+dev
+    RUN apk add --no-cache cmake pkgconf freetype-dev fontconfig-dev python3 libxcb-dev git
+    RUN mkdir -p /src
+    RUN cd /src && \
+        git clone https://github.com/alacritty/alacritty.git
+    RUN rustup override set stable && \
+        rustup update stable
+
+update:
+    FROM +deps
+    WORKDIR /src/alacritty
+    RUN cargo update
+
+build:
+    FROM +update
+    WORKDIR /src/alacritty
+    RUN cargo build
