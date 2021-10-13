@@ -19,7 +19,7 @@ build:
 
 artifact:
     FROM +build
-    WORKDIR "/tmp/hdf5-$version/build"
+    WORKDIR "/tmp/hdf5-$version/build/bin"
     SAVE ARTIFACT libhdf5.a
     SAVE ARTIFACT libhdf5.so
     SAVE ARTIFACT libhdf5_hl.a
