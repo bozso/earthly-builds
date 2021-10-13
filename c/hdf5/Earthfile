@@ -1,0 +1,28 @@
+FROM ../../envs+dev
+
+ARG major_version="1.12"
+ARG version="$major_version.1"
+
+deps:
+    RUN cd /tmp && \
+        wget "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-$major_version/hdf5-$version/src/hdf5-$version.tar.gz" && \
+        tar -xvf "hdf5-$version.tar.gz"
+
+build:
+    FROM +deps
+    WORKDIR "/tmp/hdf5-$version"
+    RUN mkdir -p "./build" && \
+        cd "./build" && \
+        cmake ..
+    WORKDIR "/tmp/hdf5-$version/build"
+    RUN make -j
+
+artifact:
+    FROM +build
+    WORKDIR "/tmp/hdf5-$version/build"
+    SAVE ARTIFACT libhdf5.a
+    SAVE ARTIFACT libhdf5.so
+    SAVE ARTIFACT libhdf5_hl.a
+    SAVE ARTIFACT libhdf5_hl.so
+    WORKDIR "/tmp/hdf5-$version"
+    SAVE ARTIFACT ./src
