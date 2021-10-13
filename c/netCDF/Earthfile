@@ -7,6 +7,12 @@ deps:
         cd /tmp && \
         wget "https://github.com/Unidata/netcdf-c/archive/refs/tags/v$version.tar.gz" && \
         tar -xvf "v$version.tar.gz"
+    WORKDIR "/tmp/netcdf-c-$version"
+    RUN mkdir -p "./deps/lib" && \
+        mkdir -p "./deps/include"
+    COPY ../hdf5+artifact/libhdf5.a ./deps/lib
+    COPY ../hdf5+artifact/src ./deps/hdf5/include
+
 
 build:
     FROM +deps
