@@ -1,5 +1,10 @@
 FROM alpine:3.11
 
+releaseFlags:
+    ENV CFLAGS="${CFLAGS} -march=native -fwhole-program -fprofile-use -flto -fomit-frame-pointer"
+    ENV CPPFLAGS="${CPPFLAGS} ${CFLAGS}"
+    ENV LDFLAGS="${LDFLAGS} --gc-sections -flto"
+
 dev:
     RUN apk add --no-cache git gcc musl-dev make cmake
 
@@ -29,5 +34,5 @@ nim:
     RUN wget https://nim-lang.org/download/nim-1.4.2.tar.xz && \
         tar -xvf nim-1.4.2.tar.xz
     ENV LDFLAGS="-static"
-    RUN cd nim-1.4.2 && sh build.sh 
+    RUN cd nim-1.4.2 && sh build.sh
     SAVE ARTIFACT nim-1.4.2/bin/nim AS LOCAL nim

@@ -10,7 +10,7 @@ lint:
 
 libsolv:
     FROM +dev
-    RUN apk add --no-cache g++ zlib-dev expat-dev 
+    RUN apk add --no-cache g++ zlib-dev expat-dev
     RUN mkdir -p /src/libsolv
     RUN git clone https://github.com/openSUSE/libsolv /src/libsolv
     WORKDIR /src/libsolv

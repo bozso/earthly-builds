@@ -12,6 +12,3 @@ down:
     RUN tar -xvf zig-linux-x86_64-0.7.1.tar.xz
     WORKDIR zig-linux-x86_64-0.7.1
     RUN ls
-
-
-

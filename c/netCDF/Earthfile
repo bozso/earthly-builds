@@ -1,0 +1,24 @@
+FROM ../../envs+dev
+
+ARG version="4.8.1"
+
+deps:
+    RUN apk add --no-cache libcurl g++ && \
+        cd /tmp && \
+        wget "https://github.com/Unidata/netcdf-c/archive/refs/tags/v$version.tar.gz" && \
+        tar -xvf "v$version.tar.gz"
+
+build:
+    FROM +deps
+    # ENV CPPFLAGS='-I${H5DIR}/include -I${ZDIR}/include'
+    # ENV LDFLAGS='-L${H5DIR}/lib -L${ZDIR}/lib'
+    RUN cd "/tmp/netcdf-c-$version" && \
+        mkdir -p "./build" && \
+        cd "./build" && \
+        cmake \
+            --parallel \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DENABLE_TESTS=ON \
+            -DENABLE_PARALLEL_TESTS=ON \
+            .. && \
+        make -j check

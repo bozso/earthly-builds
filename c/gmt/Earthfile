@@ -1,0 +1,18 @@
+FROM ../../envs+dev
+
+ARG version="6.2.0"
+
+deps:
+    RUN apk add --no-cache libcurl && \
+        cd /tmp && \
+        wget "https://github.com/GenericMappingTools/gmt/releases/download/$version/gmt-$version-src.tar.gz" && \
+        tar -xvf "gmt-$version-src.tar.gz"
+
+build:
+    FROM +deps
+    COPY ./ConfigCmake.cmake "/tmp/gmt-$version"
+    RUN cd "/tmp/gmt-$version" && \
+        mkdir -p "./build" && \
+        cd "./build" && \
+        cmake .. && \
+        make
