@@ -6,15 +6,30 @@ deps:
     RUN mkdir -p /src
     RUN cd /src && \
         git clone https://github.com/alacritty/alacritty.git
-    RUN rustup override set stable && \
+    RUN . "${HOME}/.cargo/env" && \
+        rustup override set stable && \
         rustup update stable
+        
+
 
 update:
     FROM +deps
     WORKDIR /src/alacritty
-    RUN cargo update
+    RUN . "${HOME}/.cargo/env" && \
+        cargo update
 
 build:
     FROM +update
+    RUN apk add --no-cache musl musl-dev
     WORKDIR /src/alacritty
-    RUN cargo build
+    RUN mkdir -p .cargo
+    COPY config .cargo/config
+    ENV RUSTFLAGS="-C link-arg=-s -C target-feature=+crt-static"
+    RUN . "${HOME}/.cargo/env" && \
+        cargo build
+
+artifact:
+    FROM +build
+    WORKDIR /src/alacritty
+    RUN false
+    SAVE ARTIFACT ./target/debug/alacritty AS LOCAL alacritty
