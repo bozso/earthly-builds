@@ -1,0 +1,15 @@
+FROM alpine:3.11
+
+env:
+    RUN apk add --no-cache wget libstdc++ libgcc
+
+compiler:
+    FROM +env
+    ARG version=6.0.101
+    WORKDIR /tmp
+    RUN wget \
+        https://download.visualstudio.microsoft.com/download/pr/bd94779d-c7c4-47fd-b80a-0088caa0afc6/40f115bbf4c068359e7a066fe0b03dbc/dotnet-sdk-${version}-linux-musl-x64.tar.gz && \
+        mkdir -p /dotnet && \
+        tar -xvf dotnet-sdk-${version}-linux-musl-x64.tar.gz -C /dotnet
+    ENV PATH "${PATH}:/dotnet"
+    RUN dotnet
