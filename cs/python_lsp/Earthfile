@@ -1,0 +1,12 @@
+FROM alpine:3.11
+
+build:
+    FROM ../../envs/dotnet+compiler
+    RUN apk add --no-cache git
+    RUN \
+        mkdir -p /src && cd /src && \
+        git clone https://github.com/Microsoft/python-language-server.git && \
+        cd python-language-server/src && \
+        dotnet build
+
+        # cd python-language-server/src/LanguageServer/Impl && \

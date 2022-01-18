@@ -12,4 +12,3 @@ compiler:
         mkdir -p /dotnet && \
         tar -xvf dotnet-sdk-${version}-linux-musl-x64.tar.gz -C /dotnet
     ENV PATH "${PATH}:/dotnet"
-    RUN dotnet
