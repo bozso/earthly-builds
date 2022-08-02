@@ -1,0 +1,16 @@
+FROM ubuntu:18.04
+
+deps:
+    RUN apt-get update && apt-get install -y wget g++ musl musl-dev \
+        musl-tools libglew-dev python-dev libboost-dev libboost-python-dev \
+        libboost-thread-dev libboost-program-options-dev libboost-test-dev \
+        libboost-system-dev libqt4-opengl-dev libqt4-dev libgdal-dev \
+        libcgal-dev libproj-dev libqwt-dev libfreetype6-dev \
+        libfontconfig1-dev libxrender-dev libice-dev libsm-dev
+
+    RUN mkdir -p /src/gplates
+    COPY /home/istvan/packages/downloaded/gplates-2.2.0 /src/gplates
+
+build:
+    FROM +deps
+    RUN apt-get install -y make cmake
