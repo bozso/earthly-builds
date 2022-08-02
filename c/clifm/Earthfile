@@ -1,0 +1,35 @@
+FROM debian:stable-20220801-slim
+# FROM alpine:3.13
+
+dev:
+    RUN apt-get update && apt-get install -y git make gcc libcap-dev \
+        libacl1-dev libreadline-dev libmagic-dev
+
+deps:
+    FROM +dev
+    RUN mkdir -p /src/clifm && \
+        git clone https://github.com/leo-arch/clifm /src/clifm && \
+        mkdir -p /src/clifm/deps && \
+        cp /lib/x86_64-linux-gnu/libreadline.so.8
+
+
+#dev:
+#    RUN apk add --no-cache git make gcc musl-dev acl-dev acl-static file-dev \
+#        gettext-tiny gettext-tiny-dev libcap-dev libcap-static readline-dev \
+#        readline-static runc libmagic
+#
+#deps:
+#    FROM +dev
+#    RUN mkdir -p /src/clifm && \
+#        git clone https://github.com/leo-arch/clifm /src/clifm
+
+build:
+    FROM +deps
+    WORKDIR /src/clifm
+    # RUN LDFLAGS=-static make -j
+    RUN make -j && \
+        cp 
+
+save:
+    FROM +build
+    RUN false
