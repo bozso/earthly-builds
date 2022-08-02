@@ -1,12 +1,8 @@
 FROM alpine:3.11
 
-dev:
-    RUN apk add --no-cache git gcc musl-dev make cmake
-
 lint:
-    FROM +dev
+    FROM ../../envs+dev
     RUN apk add --no-cache clang-analyzer
-
 
 libsolv:
     FROM +dev
