@@ -1,0 +1,47 @@
+# FROM centos:centos7
+# 
+# env:
+#     RUN yum update && \
+#         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && \
+#         yum install gcc wget libxcb openssl-devel libX11-devel -y
+# 
+# deps:
+#     FROM +env
+#     RUN cd /lib && \
+#         curl -s https://api.github.com/repos/nushell/nushell/releases/latest | \
+#         grep tarball_url | \
+#         cut -d '"' -f 4 | \
+#         wget -i - -O nu-latest.tar.gz && \
+#         tar xvf nu-latest.tar.gz
+# 
+# build:
+#     FROM +deps
+#     RUN cd nushell-nushell* && bash ./install-all.sh 
+
+FROM konstin2/maturin:latest
+ARG version="0.67.0"
+
+WORKDIR /usr/src
+# COPY nushell .
+
+env:
+    RUN yum update && \
+        yum install -y openssl-static zlib-devel wget gcc
+
+
+deps:
+    FROM +env
+    RUN mkdir -p /usr/src && \
+        wget "https://github.com/nushell/nushell/archive/refs/tags/0.67.0.tar.gz" && \
+        tar xvf "0.67.0.tar.gz"
+
+build:
+    FROM +deps
+    WORKDIR /usr/src/nushell-0.67.0
+    ENV OPENSSL_STATIC=true
+    RUN cargo build --workspace --release --features=extra
+
+save:
+   FROM +build
+   RUN return 1
+   SAVE ARTIFACT ./target/release/nu AS LOCAL nu
