@@ -1,0 +1,20 @@
+
+FROM ubuntu:18.04
+
+deps:
+    RUN apt-get update && apt-get install -y g++ musl musl-dev \
+        musl-tools build-essential make cmake git ncurses-dev \
+        libncurses5-dev libpcre2-dev gettext
+    RUN mkdir -p /src/fish && \
+        git clone https://github.com/fish-shell/fish-shell.git /src/fish && \
+        cd /src/fish && \
+        git checkout 3.5.1
+
+build:
+    FROM +deps
+    RUN fail
+    WORKDIR /src/fish
+    RUN mkdir build && cd build && cmake .. 
+    RUN LDFLAGS=-static make --jobs=4
+    SAVE ARTIFACT build/fish AS LOCAL fish
+    SAVE ARTIFACT build/fish_indent AS LOCAL fish_indent
